@@ -1,15 +1,35 @@
-// app/api/generate/route.js - PURE AI, NO TEMPLATES
+// app/api/generate/route.js - PURE AI, NO LIMITS + ADMOB READY
 import { NextResponse } from 'next/server';
+
+// In-memory store for demo (replace with database later)
+let userGenerations = new Map();
 
 export async function POST(request) {
   try {
-    const { userScript } = await request.json();
+    const { userScript, userId = 'anonymous', adWatched = false } = await request.json();
 
     if (!userScript) {
       return NextResponse.json({ error: 'Please enter your script idea' }, { status: 400 });
     }
 
-    console.log('PURE AI - Generating for:', userScript);
+    console.log('PURE AI - Generating for:', userScript, 'User:', userId, 'AdWatched:', adWatched);
+
+    // 🚫 REMOVED ALL USAGE LIMITS - Users can generate unlimited scripts
+    // 🎯 AdMob Integration: Track if ad was watched (for future rewarded ads)
+    if (adWatched) {
+      console.log('✅ User watched ad - granting premium generation');
+      // Future: Grant bonus features, remove cooldowns, etc.
+    }
+
+    // 📊 Analytics Tracking (for your insights)
+    const generationAnalytics = {
+      userId,
+      timestamp: new Date().toISOString(),
+      input: userScript.substring(0, 100), // Store first 100 chars only
+      adWatched,
+      modelUsed: null,
+      success: false
+    };
 
     // STRATEGY: Try multiple models until one works
     const models = [
@@ -30,7 +50,7 @@ export async function POST(request) {
           headers: {
             'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
             'Content-Type': 'application/json',
-            'HTTP-Referer': 'http://localhost:3000',
+            'HTTP-Referer': 'https://insta-trend-ai.vercel.app', // ✅ Updated to your live domain
             'X-Title': 'Instagram Reel Generator'
           },
           body: JSON.stringify({
@@ -77,12 +97,36 @@ NO TEMPLATES - ONLY ORIGINAL CREATIVE CONTENT`
           console.log('SUCCESS with model:', models[modelIndex]);
           console.log('AI Content:', aiContent.substring(0, 200) + '...');
           
+          // 📊 Update analytics
+          generationAnalytics.modelUsed = models[modelIndex];
+          generationAnalytics.success = true;
+
+          // 💾 Store generation data (for future database)
+          if (!userGenerations.has(userId)) {
+            userGenerations.set(userId, []);
+          }
+          userGenerations.get(userId).push({
+            timestamp: generationAnalytics.timestamp,
+            input: generationAnalytics.input,
+            model: generationAnalytics.modelUsed
+          });
+
+          // Keep only last 100 generations per user (memory management)
+          if (userGenerations.get(userId).length > 100) {
+            userGenerations.set(userId, userGenerations.get(userId).slice(-100));
+          }
+
           // Format the pure AI response
           const scripts = formatPureAIScripts(aiContent);
           return NextResponse.json({ 
             scripts: scripts,
             model: models[modelIndex],
-            success: true 
+            success: true,
+            analytics: {
+              totalGenerations: userGenerations.get(userId)?.length || 1,
+              adWatched: adWatched,
+              // Future: Add user tier (free/premium) based on ad engagement
+            }
           });
         }
         
@@ -96,17 +140,19 @@ NO TEMPLATES - ONLY ORIGINAL CREATIVE CONTENT`
       await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
-    // If ALL models fail, return error (NO TEMPLATES)
+    // If ALL models fail
     console.log('ALL MODELS FAILED');
-    throw new Error('All AI models are currently busy. Please try again in 60 seconds for pure AI generation.');
+    generationAnalytics.success = false;
+    
+    throw new Error('All AI models are currently busy. Please try again in 30 seconds.');
 
   } catch (error) {
     console.error('PURE AI FAILED:', error);
     
-    // NO TEMPLATES - only return error
     return NextResponse.json({ 
-      error: 'AI services are currently optimizing. Please try again in 60 seconds for pure AI-generated scripts.',
-      success: false 
+      error: 'AI services are currently optimizing. Please try again in 30 seconds.',
+      success: false,
+      retryAfter: 30
     }, { status: 503 });
   }
 }
@@ -128,4 +174,22 @@ function formatPureAIScripts(aiContent) {
   
   // If we can't split, return as one block (pure AI content)
   return [cleaned];
+}
+
+// 📊 Optional: Add analytics endpoint for your insights
+export async function GET(request) {
+  const { searchParams } = new URL(request.url);
+  const userId = searchParams.get('userId');
+  
+  if (userId && userGenerations.has(userId)) {
+    return NextResponse.json({
+      totalGenerations: userGenerations.get(userId).length,
+      recentActivity: userGenerations.get(userId).slice(-10)
+    });
+  }
+  
+  return NextResponse.json({
+    totalUsers: userGenerations.size,
+    totalGenerations: Array.from(userGenerations.values()).reduce((sum, gens) => sum + gens.length, 0)
+  });
 }

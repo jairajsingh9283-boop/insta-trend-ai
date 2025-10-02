@@ -385,3 +385,278 @@
 .upgrade-button:hover {
   transform: translateY(-2px);
 }
+/* Single Button Ad Integration */
+.generate-button {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 10px 0;
+}
+
+.generate-button.with-ad {
+  background: linear-gradient(135deg, #FF6B35, #FF8E53);
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+}
+
+.generate-button.free-only {
+  background: #667eea;
+  color: white;
+}
+
+.generate-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.usage-counter {
+  text-align: center;
+  margin: 15px 0;
+}
+
+.counter-badge {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.ad-indicator {
+  background: #FF6B35;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+.generation-info {
+  text-align: center;
+  margin: 15px 0;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* Ad Modal */
+.ad-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.ad-modal {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.ad-header h3 {
+  color: #FF6B35;
+  margin-bottom: 10px;
+}
+
+.ad-benefits {
+  margin: 20px 0;
+}
+
+.benefit-item {
+  background: #f8f9fa;
+  padding: 8px 12px;
+  margin: 6px 0;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.ad-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.watch-ad-button {
+  background: linear-gradient(135deg, #FF6B35, #FF8E53);
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.skip-ad-button {
+  background: transparent;
+  color: #666;
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.ad-footer {
+  margin-top: 15px;
+  color: #888;
+}
+
+.admob-status {
+  text-align: center;
+  margin-top: 20px;
+  padding: 10px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #666;
+}
+/* Mandatory Ad Styling */
+.generate-button {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 15px 0;
+}
+
+.generate-button.ad-required {
+  background: linear-gradient(135deg, #FF6B35, #FF8E53);
+  color: white;
+  box-shadow: 0 4px 20px rgba(255, 107, 53, 0.4);
+}
+
+.generate-button.free-mode {
+  background: #28a745;
+  color: white;
+}
+
+.generate-button:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Ad Status Banner */
+.ad-status-banner {
+  margin: 20px 0;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.ad-available {
+  background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+  border: 2px solid #FF6B35;
+  color: #e65100;
+}
+
+.ad-unavailable {
+  background: #e8f5e8;
+  border: 2px solid #28a745;
+  color: #155724;
+}
+
+.ad-status-banner span {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+/* Ad Loading Overlay */
+.ad-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.ad-loading-content {
+  background: white;
+  padding: 40px 30px;
+  border-radius: 15px;
+  text-align: center;
+  max-width: 350px;
+  width: 90%;
+}
+
+.ad-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #FF6B35;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.ad-loading-content h3 {
+  color: #FF6B35;
+  margin-bottom: 10px;
+}
+
+.ad-tip {
+  margin-top: 20px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  color: #666;
+}
+
+.generation-info {
+  text-align: center;
+  margin: 15px 0;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.admob-status {
+  text-align: center;
+  margin-top: 20px;
+  padding: 10px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #666;
+}
