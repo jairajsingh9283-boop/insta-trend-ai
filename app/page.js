@@ -40,7 +40,37 @@ export default function Home() {
       startGeneration(false); // false = no ad watched
     }
   };
-
+  // 🧪 TEST FUNCTION - Add this
+const testAPI = async () => {
+  console.log('🧪 Testing API connection...');
+  setLoading(true);
+  
+  try {
+    const response = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        userScript: 'Test: create a reel about morning coffee', 
+        userId: 'test_user_123',
+        adWatched: true 
+      }),
+    });
+    
+    const data = await response.json();
+    console.log('🧪 API Test Result:', data);
+    
+    if (data.success) {
+      alert('✅ API is working! Check console for details.');
+    } else {
+      alert('❌ API error: ' + data.error);
+    }
+  } catch (error) {
+    console.error('🧪 API Test Failed:', error);
+    alert('💥 API connection failed: ' + error.message);
+  } finally {
+    setLoading(false);
+  }
+};
   // Show actual rewarded ad
   const showRewardedAd = () => {
     setLoading(true);
@@ -65,40 +95,48 @@ export default function Home() {
     }, 3000); // Simulate 3 second ad
   };
 
-  // Start the actual generation process
-  const startGeneration = async (adWatched = false) => {
-    setLoading(true);
-    setScripts([]);
-    setLastError('');
+ // Start the actual generation process - FIXED VERSION
+const startGeneration = async (adWatched = false) => {
+  setLoading(true);
+  setScripts([]);
+  setLastError('');
 
-    try {
-      const response = await fetch('/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          userScript, 
-          userId: 'user_' + Date.now(),
-          adWatched: adWatched 
-        }),
-      });
+  try {
+    console.log('🔄 Sending request to API...');
+    
+    const response = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        userScript, 
+        userId: 'user_' + Date.now(),
+        adWatched: adWatched 
+      }),
+    });
 
-      const data = await response.json();
+    console.log('📡 API Response status:', response.status);
+    
+    const data = await response.json();
+    console.log('📦 API Response data:', data);
+    
+    if (data.success && data.scripts) {
+      // ✅ FIXED: Directly use the scripts array
+      setScripts(data.scripts);
+      console.log('✅ Generation successful! Scripts:', data.scripts.length);
       
-      if (data.success) {
-        setScripts(data.scripts);
-        console.log(adWatched ? '🎉 Premium generation complete' : '🤖 Free generation complete');
-        
-        // Re-check ad availability for next generation
-        setTimeout(checkAdAvailability, 1000);
-      } else {
-        setLastError(data.error);
-      }
-    } catch (error) {
-      setLastError('Connection failed. Please check your internet.');
-    } finally {
-      setLoading(false);
+      // Re-check ad availability for next generation
+      setTimeout(checkAdAvailability, 1000);
+    } else {
+      setLastError(data.error || 'Generation failed. Please try again.');
+      console.log('❌ API returned error:', data.error);
     }
-  };
+  } catch (error) {
+    console.error('💥 Network error:', error);
+    setLastError('Connection failed. Please check your internet.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Get button text
   const getButtonText = () => {
@@ -155,7 +193,31 @@ export default function Home() {
             placeholder="e.g., I want to make reel showing my new laptop with cinematic shots"
             rows="3"
           />
-          
+          {/* Single Generation Button */}
+<button 
+  onClick={generateScripts}
+  disabled={loading}
+  className={`generate-button ${adAvailable ? 'ad-required' : 'free-mode'}`}
+>
+  {getButtonText()}
+</button>
+
+{/* 🧪 ADD THIS TEMPORARY TEST BUTTON */}
+<button 
+  onClick={testAPI}
+  disabled={loading}
+  style={{
+    backgroundColor: '#ff6b35',
+    color: 'white',
+    padding: '10px',
+    margin: '10px 0',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer'
+  }}
+>
+  🧪 Test API Connection
+</button>
           {/* Single Generation Button */}
           <button 
             onClick={generateScripts}
