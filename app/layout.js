@@ -1,4 +1,4 @@
-// app/layout.js - USING NEXT.JS LINK COMPONENT
+// app/layout.js - CLEANED (NO DASHBOARD, LOGIN, SIGNUP)
 import './globals.css'
 import Link from 'next/link'
 
@@ -22,27 +22,11 @@ export default function RootLayout({ children }) {
             {/* Navigation Links */}
             <div className="nav-links">
               <Link href="/" className="nav-link">Home</Link>
-              <Link href="/dashboard" className="nav-link">Dashboard</Link>
               
               {/* Dropdown Menu */}
               <div className="dropdown">
                 <button className="dropbtn">🔍 Menu</button>
                 <div className="dropdown-content">
-                  {/* Authentication Section */}
-                  <div className="dropdown-section">
-                    <div className="section-title">Account</div>
-                    <Link href="/login" className="dropdown-item login-item">
-                      <span className="item-icon">🔐</span>
-                      Login
-                    </Link>
-                    <Link href="/signup" className="dropdown-item signup-item">
-                      <span className="item-icon">✨</span>
-                      Sign Up
-                    </Link>
-                  </div>
-                  
-                  <div className="dropdown-divider"></div>
-                  
                   {/* Information Pages */}
                   <div className="dropdown-section">
                     <div className="section-title">Information</div>
@@ -87,8 +71,6 @@ export default function RootLayout({ children }) {
               <Link href="/terms">Terms of Service</Link>
               <Link href="/contact">Contact</Link>
               <Link href="/about">About</Link>
-              <Link href="/login">Login</Link>
-              <Link href="/signup">Sign Up</Link>
             </div>
             <p>&copy; 2024 ReelAI Generator. All rights reserved.</p>
           </div>
