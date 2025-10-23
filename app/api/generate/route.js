@@ -1,11 +1,10 @@
-// app/api/generate/route.js - PURE AI, NO LIMITS + ADMOB READY
+// app/api/generate/route.js - FIXED (NO LOCALSTORAGE ERROR)
 import { NextResponse } from 'next/server';
 
 // In-memory store for demo (replace with database later)
 let userGenerations = new Map();
 
 export async function POST(request) {
-  
   try {
     const { userScript, userId = 'anonymous', adWatched = false } = await request.json();
 
@@ -16,10 +15,8 @@ export async function POST(request) {
     console.log('PURE AI - Generating for:', userScript, 'User:', userId, 'AdWatched:', adWatched);
 
     // 🚫 REMOVED ALL USAGE LIMITS - Users can generate unlimited scripts
-    // 🎯 AdMob Integration: Track if ad was watched (for future rewarded ads)
     if (adWatched) {
       console.log('✅ User watched ad - granting premium generation');
-      // Future: Grant bonus features, remove cooldowns, etc.
     }
 
     // 📊 Analytics Tracking (for your insights)
@@ -51,7 +48,7 @@ export async function POST(request) {
           headers: {
             'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
             'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://insta-trend-ai.vercel.app', // ✅ Updated to your live domain
+            'HTTP-Referer': 'https://insta-trend-ai.vercel.app',
             'X-Title': 'Instagram Reel Generator'
           },
           body: JSON.stringify({
@@ -102,7 +99,7 @@ NO TEMPLATES - ONLY ORIGINAL CREATIVE CONTENT`
           generationAnalytics.modelUsed = models[modelIndex];
           generationAnalytics.success = true;
 
-          // 💾 Store generation data (for future database)
+          // 💾 Store generation data in memory
           if (!userGenerations.has(userId)) {
             userGenerations.set(userId, []);
           }
@@ -126,7 +123,6 @@ NO TEMPLATES - ONLY ORIGINAL CREATIVE CONTENT`
             analytics: {
               totalGenerations: userGenerations.get(userId)?.length || 1,
               adWatched: adWatched,
-              // Future: Add user tier (free/premium) based on ad engagement
             }
           });
         }
