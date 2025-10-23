@@ -5,6 +5,30 @@ import { NextResponse } from 'next/server';
 let userGenerations = new Map();
 
 export async function POST(request) {
+  // Add this at the start of your POST function in route.js
+const saveGenerationStats = (userId, userScript) => {
+  try {
+    const stats = JSON.parse(localStorage.getItem('ai_generation_stats') || '{"generations": []}');
+    
+    stats.generations.push({
+      userId,
+      userScript: userScript.substring(0, 100), // Store first 100 chars
+      timestamp: new Date().toISOString()
+    });
+    
+    // Keep only last 1000 generations to prevent storage overload
+    if (stats.generations.length > 1000) {
+      stats.generations = stats.generations.slice(-1000);
+    }
+    
+    localStorage.setItem('ai_generation_stats', JSON.stringify(stats));
+  } catch (error) {
+    console.error('Error saving stats:', error);
+  }
+};
+
+// Call it in your API route before generating:
+saveGenerationStats(userId, userScript);
   try {
     const { userScript, userId = 'anonymous', adWatched = false } = await request.json();
 
