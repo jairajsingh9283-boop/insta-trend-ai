@@ -78,7 +78,7 @@ export default function Home() {
           {/* Info Text */}
           <div className="generation-info">
             <p>
-              <strong>Unlimited Generations:</strong> Create as many AI scripts as you need. No limits, no ads.
+              <strong>Unlimited Generations:</strong> Create as many AI scripts as you need.
             </p>
           </div>
         </div>
