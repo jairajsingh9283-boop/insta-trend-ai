@@ -1,4 +1,4 @@
-// app/page.js - MANDATORY ADS FOR EVERY GENERATION
+// app/page.js - CREDITS SYSTEM + ADS
 'use client';
 import { useState, useEffect } from 'react';
 
@@ -7,143 +7,116 @@ export default function Home() {
   const [scripts, setScripts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [lastError, setLastError] = useState('');
-  const [adAvailable, setAdAvailable] = useState(true); // Assume ads are available
+  const [adAvailable, setAdAvailable] = useState(true);
   const [showAd, setShowAd] = useState(false);
+  const [credits, setCredits] = useState(5);
+  const [lastReset, setLastReset] = useState(Date.now());
 
-  // Check ad availability on load
+  // Check ad availability and credit reset on load
   useEffect(() => {
     checkAdAvailability();
-  }, []);
+    checkCreditReset();
+  }, );
 
   const checkAdAvailability = () => {
-    // 🔥 SIMULATION: Replace with actual AdMob availability check
-    // For real implementation: admob.rewarded.load() then check if .isLoaded()
-    const isAdAvailable = Math.random() > 0.1; // 90% available for testing
+    const isAdAvailable = Math.random() > 0.1;
     setAdAvailable(isAdAvailable);
     console.log('Ad available:', isAdAvailable);
   };
 
-  // Main generation function - ALWAYS tries to show ad first
+  const checkCreditReset = () => {
+    const now = Date.now();
+    const oneDay = 24 * 60 * 60 * 1000;
+    
+    if (now - lastReset >= oneDay) {
+      setCredits(5);
+      setLastReset(now);
+      console.log('✅ Daily credits reset to 5');
+    }
+  };
+
+  // Main generation function with credits system
   const generateScripts = async () => {
     if (!userScript.trim()) {
       alert('Please enter your script idea!');
       return;
     }
 
-    // ALWAYS try to show ad first
-    if (adAvailable) {
-      console.log('🤑 Showing ad for generation...');
-      setShowAd(true);
-      showRewardedAd();
+    // Check if user has credits
+    if (credits > 0) {
+      // Use free credit
+      setCredits(prev => prev - 1);
+      console.log('🎫 Using 1 credit. Remaining:', credits - 1);
+      startGeneration(false);
     } else {
-      console.log('🚫 Ad not available - generating for free');
-      startGeneration(false); // false = no ad watched
+      // No credits left - require ad
+      if (adAvailable) {
+        console.log('📺 No credits left - showing ad');
+        setShowAd(true);
+        showRewardedAd();
+      } else {
+        alert('No credits left and ads unavailable. Please try again later.');
+      }
     }
   };
-  // 🧪 TEST FUNCTION - Add this
-const testAPI = async () => {
-  console.log('🧪 Testing API connection...');
-  setLoading(true);
-  
-  try {
-    const response = await fetch('/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        userScript: 'Test: create a reel about morning coffee', 
-        userId: 'test_user_123',
-        adWatched: true 
-      }),
-    });
-    
-    const data = await response.json();
-    console.log('🧪 API Test Result:', data);
-    
-    if (data.success) {
-      alert('✅ API is working! Check console for details.');
-    } else {
-      alert('❌ API error: ' + data.error);
-    }
-  } catch (error) {
-    console.error('🧪 API Test Failed:', error);
-    alert('💥 API connection failed: ' + error.message);
-  } finally {
-    setLoading(false);
-  }
-};
+
   // Show actual rewarded ad
   const showRewardedAd = () => {
     setLoading(true);
     
-    // 🔥 PLACEHOLDER: Replace with actual AdMob rewarded ad code
-    // Real implementation: admob.rewarded.show()
-    
-    // Simulate ad loading and showing
     setTimeout(() => {
-      // Simulate ad completion (80% success rate)
       const adCompleted = Math.random() > 0.2;
       
       if (adCompleted) {
         console.log('✅ Ad completed successfully - premium generation');
-        startGeneration(true); // true = ad watched
+        startGeneration(true);
       } else {
         console.log('❌ Ad failed or user closed ad - free generation');
-        startGeneration(false); // false = no ad watched
+        startGeneration(false);
       }
       
       setShowAd(false);
-    }, 3000); // Simulate 3 second ad
+    }, 3000);
   };
 
- // Start the actual generation process - FIXED VERSION
-const startGeneration = async (adWatched = false) => {
-  setLoading(true);
-  setScripts([]);
-  setLastError('');
+  // Start the actual generation process
+  const startGeneration = async (adWatched = false) => {
+    setLoading(true);
+    setScripts([]);
+    setLastError('');
 
-  try {
-    console.log('🔄 Sending request to API...');
-    
-    const response = await fetch('/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        userScript, 
-        userId: 'user_' + Date.now(),
-        adWatched: adWatched 
-      }),
-    });
-
-    console.log('📡 API Response status:', response.status);
-    
-    const data = await response.json();
-    console.log('📦 API Response data:', data);
-    
-    if (data.success && data.scripts) {
-      // ✅ FIXED: Directly use the scripts array
-      setScripts(data.scripts);
-      console.log('✅ Generation successful! Scripts:', data.scripts.length);
+    try {
+      console.log('🔄 Sending request to API...');
       
-      // Re-check ad availability for next generation
-      setTimeout(checkAdAvailability, 1000);
-    } else {
-      setLastError(data.error || 'Generation failed. Please try again.');
-      console.log('❌ API returned error:', data.error);
-    }
-  } catch (error) {
-    console.error('💥 Network error:', error);
-    setLastError('Connection failed. Please check your internet.');
-  } finally {
-    setLoading(false);
-  }
-};
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          userScript, 
+          userId: 'user_' + Date.now(),
+          adWatched: adWatched 
+        }),
+      });
 
-  // Get button text
-  const getButtonText = () => {
-    if (loading) {
-      return showAd ? '📺 Showing Ad...' : '🔄 AI is Generating...';
+      console.log('📡 API Response status:', response.status);
+      
+      const data = await response.json();
+      console.log('📦 API Response data:', data);
+      
+      if (data.success && data.scripts) {
+        setScripts(data.scripts);
+        console.log('✅ Generation successful! Scripts:', data.scripts.length);
+        setTimeout(checkAdAvailability, 1000);
+      } else {
+        setLastError(data.error || 'Generation failed. Please try again.');
+        console.log('❌ API returned error:', data.error);
+      }
+    } catch (error) {
+      console.error('💥 Network error:', error);
+      setLastError('Connection failed. Please check your internet.');
+    } finally {
+      setLoading(false);
     }
-    return adAvailable ? '🎬 Generate Script (Watch Ad)' : '🎬 Generate Script (Free)';
   };
 
   return (
@@ -165,22 +138,16 @@ const startGeneration = async (adWatched = false) => {
       {/* Header */}
       <div className="generator-header">
         <h1>Instagram Reel Script Generator</h1>
-        <p>AI-Powered Content Creation • Ads Support Free Service</p>
+        <p>AI-Powered Content Creation • Free Credits + Ads</p>
       </div>
 
-      {/* Ad Status */}
-      <div className="ad-status-banner">
-        {adAvailable ? (
-          <div className="ad-available">
-            <span>📺</span>
-            <strong>Ad Required:</strong> Watch a short ad to generate scripts
-          </div>
-        ) : (
-          <div className="ad-unavailable">
-            <span>🤖</span>
-            <strong>Free Generation:</strong> Ads currently unavailable
-          </div>
-        )}
+      {/* Credits System */}
+      <div className="credits-system">
+        <div className="credits-display">
+          <span className="credits-icon">🎫</span>
+          <span className="credits-text">Daily Credits: {credits}/5</span>
+          <span className="credits-reset">Resets in 24h</span>
+        </div>
       </div>
 
       {/* Main Input Area */}
@@ -193,53 +160,29 @@ const startGeneration = async (adWatched = false) => {
             placeholder="e.g., I want to make reel showing my new laptop with cinematic shots"
             rows="3"
           />
-          {/* Single Generation Button */}
-<button 
-  onClick={generateScripts}
-  disabled={loading}
-  className={`generate-button ${adAvailable ? 'ad-required' : 'free-mode'}`}
->
-  {getButtonText()}
-</button>
-
-{/* 🧪 ADD THIS TEMPORARY TEST BUTTON */}
-<button 
-  onClick={testAPI}
-  disabled={loading}
-  style={{
-    backgroundColor: '#ff6b35',
-    color: 'white',
-    padding: '10px',
-    margin: '10px 0',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer'
-  }}
->
-  🧪 Test API Connection
-</button>
-          {/* Single Generation Button */}
+          
+          {/* Single Generation Button - FIXED */}
           <button 
             onClick={generateScripts}
-            disabled={loading}
-            className={`generate-button ${adAvailable ? 'ad-required' : 'free-mode'}`}
+            disabled={loading || credits === 0}
+            className={`generate-button ${credits > 0 ? 'credit-mode' : 'ad-mode'}`}
           >
-            {getButtonText()}
+            {loading ? (
+              showAd ? '📺 Showing Ad...' : '🔄 AI is Generating...'
+            ) : credits > 0 ? (
+              `🎬 Generate Script (${credits} Credits Left)`
+            ) : (
+              '📺 Watch Ad to Generate'
+            )}
           </button>
 
           {/* Info Text */}
           <div className="generation-info">
-            {adAvailable ? (
-              <p>
-                <strong>📺 Ad Required:</strong> Every generation requires watching a short ad. 
-                This keeps our AI service free for everyone.
-              </p>
-            ) : (
-              <p>
-                <strong>🤖 Free Mode:</strong> Ads are temporarily unavailable. 
-                You can generate scripts for free until ads return.
-              </p>
-            )}
+            <p>
+              <strong>🎫 Credit System:</strong> {credits > 0 
+                ? `${credits} free credits remaining today.` 
+                : 'No credits left. Watch ads for more generations.'}
+            </p>
           </div>
         </div>
       </div>
@@ -266,7 +209,10 @@ const startGeneration = async (adWatched = false) => {
                 {script}
               </div>
               <button
-                onClick={() => navigator.clipboard.writeText(script)}
+                onClick={() => {
+                  navigator.clipboard.writeText(script);
+                  alert('Script copied to clipboard!');
+                }}
                 className="copy-button"
               >
                 📋 Copy Script
@@ -284,11 +230,6 @@ const startGeneration = async (adWatched = false) => {
           <p className="loading-subtext">This may take 10-30 seconds</p>
         </div>
       )}
-
-      {/* AdMob Status */}
-      <div className="admob-status">
-        <small>Ad System: {adAvailable ? '🟢 Ads Available' : '🔴 Ads Unavailable'}</small>
-      </div>
     </div>
   );
 }
