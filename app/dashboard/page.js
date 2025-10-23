@@ -1,4 +1,4 @@
-// app/page.js - 1 CREDIT = 1 GENERATION
+// app/page.js - PERSISTENT CREDITS SYSTEM
 'use client';
 import { useState, useEffect } from 'react';
 
@@ -9,12 +9,41 @@ export default function Home() {
   const [lastError, setLastError] = useState('');
   const [adAvailable, setAdAvailable] = useState(true);
   const [showAd, setShowAd] = useState(false);
-  const [credits, setCredits] = useState(1); // Start with 1 credit
+  const [credits, setCredits] = useState(0);
 
-  // Check ad availability on load
+  // Load credits from localStorage on app start
   useEffect(() => {
     checkAdAvailability();
+    loadCreditsFromStorage();
   }, []);
+
+  const loadCreditsFromStorage = () => {
+    try {
+      const savedCredits = localStorage.getItem('ai_credits');
+      if (savedCredits !== null) {
+        setCredits(parseInt(savedCredits));
+        console.log('📁 Loaded credits from storage:', savedCredits);
+      } else {
+        // First time user - give 1 free credit
+        setCredits(1);
+        localStorage.setItem('ai_credits', '1');
+        console.log('🎁 First time user - granted 1 free credit');
+      }
+    } catch (error) {
+      console.error('Error loading credits:', error);
+      setCredits(1); // Fallback
+    }
+  };
+
+  const saveCreditsToStorage = (newCredits) => {
+    try {
+      localStorage.setItem('ai_credits', newCredits.toString());
+      setCredits(newCredits);
+      console.log('💾 Saved credits to storage:', newCredits);
+    } catch (error) {
+      console.error('Error saving credits:', error);
+    }
+  };
 
   const checkAdAvailability = () => {
     const isAdAvailable = Math.random() > 0.1;
@@ -22,7 +51,7 @@ export default function Home() {
     console.log('Ad available:', isAdAvailable);
   };
 
-  // Main generation function - 1 credit = 1 generation
+  // Main generation function
   const generateScripts = async () => {
     if (!userScript.trim()) {
       alert('Please enter your script idea!');
@@ -32,8 +61,8 @@ export default function Home() {
     // SCENARIO 1: User has credit
     if (credits > 0) {
       console.log('🎫 Using 1 credit for generation');
-      setCredits(0); // Use the credit
-      startGeneration(false); // Free generation (no ad needed)
+      saveCreditsToStorage(credits - 1); // Use 1 credit
+      startGeneration(false); // Free generation
     }
     // SCENARIO 2: No credits but ads available
     else if (adAvailable) {
@@ -55,10 +84,11 @@ export default function Home() {
       const adCompleted = Math.random() > 0.2;
       
       if (adCompleted) {
-        console.log('✅ Ad completed - granting 1 generation');
-        startGeneration(true); // Ad watched generation
+        console.log('✅ Ad completed - granting 1 credit');
+        saveCreditsToStorage(1); // Grant 1 credit
+        startGeneration(true); // Start generation
       } else {
-        console.log('❌ Ad failed - no generation granted');
+        console.log('❌ Ad failed - no credit granted');
         alert('Ad not completed. Please try again.');
       }
       
@@ -94,23 +124,35 @@ export default function Home() {
         setScripts(data.scripts);
         console.log('✅ Generation successful!');
         
-        // If user watched ad, give them 1 credit for next time
-        if (adWatched) {
-          setCredits(1);
-          console.log('🎫 Granted 1 credit for watching ad');
-        }
-        
         setTimeout(checkAdAvailability, 1000);
       } else {
         setLastError(data.error || 'Generation failed. Please try again.');
         console.log('❌ API returned error:', data.error);
+        
+        // Refund credit if generation failed
+        if (!adWatched) {
+          saveCreditsToStorage(credits + 1);
+          console.log('🔄 Refunded credit due to generation failure');
+        }
       }
     } catch (error) {
       console.error('💥 Network error:', error);
       setLastError('Connection failed. Please check your internet.');
+      
+      // Refund credit if network error
+      if (!adWatched) {
+        saveCreditsToStorage(credits + 1);
+        console.log('🔄 Refunded credit due to network error');
+      }
     } finally {
       setLoading(false);
     }
+  };
+
+  // Reset credits (for testing - you can remove this)
+  const resetCredits = () => {
+    saveCreditsToStorage(1);
+    alert('Credits reset to 1 (for testing)');
   };
 
   return (
@@ -133,6 +175,21 @@ export default function Home() {
       <div className="generator-header">
         <h1>Instagram Reel Script Generator</h1>
         <p>AI-Powered Content Creation • Watch Ads = Get Generations</p>
+        
+        {/* Reset button for testing - remove in production */}
+        <button 
+          onClick={resetCredits}
+          style={{
+            background: 'transparent',
+            border: '1px solid #ccc',
+            padding: '5px 10px',
+            fontSize: '12px',
+            marginTop: '10px',
+            cursor: 'pointer'
+          }}
+        >
+          🔄 Reset Credits (Testing)
+        </button>
       </div>
 
       {/* Credits System */}
@@ -140,7 +197,10 @@ export default function Home() {
         <div className="credits-display">
           <span className="credits-icon">🎬</span>
           <span className="credits-text">
-            {credits > 0 ? '1 Free Generation Available' : 'Watch Ad to Generate'}
+            {credits > 0 ? 
+              `${credits} Free Generation${credits > 1 ? 's' : ''} Available` : 
+              'Watch Ad to Generate'
+            }
           </span>
           <span className="credits-reset">1 Ad = 1 Generation</span>
         </div>
@@ -166,7 +226,7 @@ export default function Home() {
             {loading ? (
               showAd ? '📺 Showing Ad...' : '🔄 AI is Generating...'
             ) : credits > 0 ? (
-              '🎬 Generate Script (Free)'
+              `🎬 Generate Script (${credits} Free)`
             ) : (
               '📺 Watch Ad to Generate'
             )}
@@ -176,7 +236,7 @@ export default function Home() {
           <div className="generation-info">
             <p>
               <strong>How it works:</strong> {credits > 0 
-                ? 'You have 1 free generation. After this, watch ads for more.' 
+                ? `You have ${credits} free generation${credits > 1 ? 's' : ''}. Credits save between sessions.` 
                 : 'Watch a short ad to generate AI scripts. 1 ad = 1 generation.'}
             </p>
           </div>
