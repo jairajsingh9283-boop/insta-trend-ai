@@ -1,4 +1,4 @@
-// app/page.js - AI REEL GENERATOR WITH TRENDS
+// app/page.js - Instagram Reel Generator (fixed layout)
 'use client';
 import { useState } from 'react';
 
@@ -21,7 +21,6 @@ export default function Home() {
 
     try {
       console.log('🔄 Generating AI scripts...');
-      
       const response = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -32,7 +31,6 @@ export default function Home() {
       });
 
       const data = await response.json();
-      
       if (data.success && data.scripts) {
         setScripts(data.scripts);
         console.log('✅ AI generated scripts successfully!');
@@ -45,6 +43,12 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Helper function to extract trend name
+  const extractTrendName = (script) => {
+    const match = script.match(/🎬\s*TREN(D|DS)?:\s*(.+)/i);
+    return match ? match[2].trim() : 'Untitled Trend';
   };
 
   return (
@@ -66,7 +70,7 @@ export default function Home() {
             rows="3"
           />
           
-          {/* Generation Button */}
+          {/* Generate Button */}
           <button 
             onClick={generateScripts}
             disabled={loading}
@@ -75,7 +79,6 @@ export default function Home() {
             {loading ? '🔄 AI is Generating...' : '🎬 Generate 10 Trendy Scripts'}
           </button>
 
-          {/* Info Text */}
           <div className="generation-info">
             <p>
               <strong>10 Complete Scripts:</strong> Get 10 viral Reel scripts with trends, songs, and hashtags tailored to your niche.
@@ -88,9 +91,7 @@ export default function Home() {
       {lastError && (
         <div className="error-message">
           <p>{lastError}</p>
-          <button onClick={() => setLastError('')}>
-            Try Again
-          </button>
+          <button onClick={() => setLastError('')}>Try Again</button>
         </div>
       )}
 
@@ -101,34 +102,34 @@ export default function Home() {
             <p>✨ Your 10 AI Generated Reel Scripts ✨</p>
             <small>Complete with trends, songs, and hashtags</small>
           </div>
-         {scripts.map((script, index) => {
-  // extract the trend title from the AI text
-  const trendMatch = script.match(/🎬\s*TREN(D|DS)?:\s*(.+)/i);
-  const trendName = trendMatch ? trendMatch[2].trim() : `Trend ${index + 1}`;
 
-  return (
-    <div key={index} className="script-card">
-      {/* ✅ Trend name moved INSIDE card */}
-      <h2 className="trend-title">
-        {index + 1}. {trendName}
-      </h2>
+          {scripts.map((script, index) => {
+            const trendName = extractTrendName(script);
+            return (
+              <div key={index} className="script-card">
+                {/* ✅ Trend Title INSIDE the card */}
+                <h2 className="trend-title">
+                  {index + 1}. {trendName}
+                </h2>
 
-      <div className="script-content">
-        <pre>{script}</pre>
-      </div>
+                <div className="script-content">
+                  <pre>{script}</pre>
+                </div>
 
-      <button
-        onClick={() => {
-          navigator.clipboard.writeText(script);
-          alert('Script copied to clipboard!');
-        }}
-        className="copy-button"
-      >
-        📋 Copy Script
-      </button>
-    </div>
-  );
-})}
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(script);
+                    alert('Script copied to clipboard!');
+                  }}
+                  className="copy-button"
+                >
+                  📋 Copy Script
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Loading Indicator */}
       {loading && (
