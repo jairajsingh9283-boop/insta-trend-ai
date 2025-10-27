@@ -142,16 +142,33 @@ Create EXACTLY 10 scripts - one for each trend above. Make them authentic and ea
 }
 
 function formatAIScripts(aiContent) {
-  // Split into individual scripts
-  const sections = aiContent.split(/(?=🎬 TREND: |\d+\. 🎬|Script \d+:)/i);
-  
-  if (sections.length >= 10) {
-    return sections.slice(0, 10).map(section => section.trim()).filter(section => section.length > 0);
+  // Normalize line breaks and remove junk
+  aiContent = aiContent
+    .replace(/\r/g, '')
+    .replace(/\n{2,}/g, '\n')
+    .trim();
+
+  // Split on trend markers or numbers cleanly
+  const sections = aiContent.split(
+    /(?:^|\n)(?:\d+\.\s*|🎬\s*TREND[:\-])\s*/i
+  );
+
+  // Filter out junk & ensure we have real content
+  const clean = sections
+    .map(s => s.trim())
+    .filter(s => s.length > 30 && /\b(VISUALS|SCRIPT|HASHTAGS|🎬|📱|💬)/i.test(s));
+
+  // If still less than 10, try splitting by “Trend -” fallback
+  if (clean.length < 10) {
+    const backup = aiContent.split(/Trend\s*[-–—]\s*/i)
+      .map(s => s.trim())
+      .filter(s => s.length > 30);
+    return backup.length > clean.length ? backup : clean;
   }
-  
-  // If we can't split properly, return the content as one block
-  return [aiContent];
+
+  return clean.slice(0, 10);
 }
+
 
 // Analytics endpoint
 export async function GET(request) {
