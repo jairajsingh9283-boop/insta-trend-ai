@@ -64,7 +64,6 @@ USE THESE EXACT TRENDS WITH THEIR PROPER FORMATS:
 9. "I'm Gonna Have to Go and Disagree With You There" Trend - Lip sync to this audio while disagreeing with a common misconception in your niche, then proving your point.
 
 10. "Doesn't Know it Yet" Trend - Show ordinary moment with text "This was me before...", then dramatic transition to big achievement/realization.
-
 FORMAT FOR EACH SCRIPT:
 🎬 TREND: [Trend Name]
 📱 VISUALS: [3-4 specific camera shots/angles]
