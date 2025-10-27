@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
           <div className="nav-container">
             {/* Logo */}
             <div className="nav-logo">
-              <Link href="/">🎬 ReelAI</Link>
+              <Link href="/">🎬Instatrendai    </Link>
             </div>
 
             {/* Navigation Links */}
