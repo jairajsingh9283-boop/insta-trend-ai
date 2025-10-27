@@ -64,6 +64,7 @@ USE THESE EXACT TRENDS WITH THEIR PROPER FORMATS:
 9. "I'm Gonna Have to Go and Disagree With You There" Trend - Lip sync to this audio while disagreeing with a common misconception in your niche, then proving your point.
 
 10. "Doesn't Know it Yet" Trend - Show ordinary moment with text "This was me before...", then dramatic transition to big achievement/realization.
+
 FORMAT FOR EACH SCRIPT:
 🎬 TREND: [Trend Name]
 📱 VISUALS: [3-4 specific camera shots/angles]
@@ -142,33 +143,16 @@ Create EXACTLY 10 scripts - one for each trend above. Make them authentic and ea
 }
 
 function formatAIScripts(aiContent) {
-  // Normalize line breaks and remove junk
-  aiContent = aiContent
-    .replace(/\r/g, '')
-    .replace(/\n{2,}/g, '\n')
-    .trim();
-
-  // Split on trend markers or numbers cleanly
-  const sections = aiContent.split(
-    /(?:^|\n)(?:\d+\.\s*|🎬\s*TREND[:\-])\s*/i
-  );
-
-  // Filter out junk & ensure we have real content
-  const clean = sections
-    .map(s => s.trim())
-    .filter(s => s.length > 30 && /\b(VISUALS|SCRIPT|HASHTAGS|🎬|📱|💬)/i.test(s));
-
-  // If still less than 10, try splitting by “Trend -” fallback
-  if (clean.length < 10) {
-    const backup = aiContent.split(/Trend\s*[-–—]\s*/i)
-      .map(s => s.trim())
-      .filter(s => s.length > 30);
-    return backup.length > clean.length ? backup : clean;
+  // Split into individual scripts
+  const sections = aiContent.split(/(?=🎬 TREND: |\d+\. 🎬|Script \d+:)/i);
+  
+  if (sections.length >= 10) {
+    return sections.slice(0, 10).map(section => section.trim()).filter(section => section.length > 0);
   }
-
-  return clean.slice(0, 10);
+  
+  // If we can't split properly, return the content as one block
+  return [aiContent];
 }
-
 
 // Analytics endpoint
 export async function GET(request) {
