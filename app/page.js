@@ -1,4 +1,4 @@
-// app/page.js - PURE AI GENERATION (NO ADS, NO LIMITS)
+// app/page.js - PURE AI GENERATION (NO TEMPLATES)
 'use client';
 import { useState } from 'react';
 
@@ -8,10 +8,10 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [lastError, setLastError] = useState('');
 
-  // Pure generation function - NO LIMITS
+  // Pure generation function - NO TEMPLATES
   const generateScripts = async () => {
     if (!userScript.trim()) {
-      alert('Please enter your script idea!');
+      alert('Please enter your content niche or idea!');
       return;
     }
 
@@ -58,15 +58,15 @@ export default function Home() {
       {/* Main Input Area */}
       <div className="chat-container">
         <div className="input-area">
-          <label>Your Reel Idea</label>
+          <label>Your Content Niche or Idea</label>
           <textarea 
             value={userScript}
             onChange={(e) => setUserScript(e.target.value)}
-            placeholder="e.g., I want to make reel showing my new laptop with cinematic shots"
+            placeholder="e.g., I am a gaming creator, beauty influencer, food blogger, lifestyle content creator..."
             rows="3"
           />
           
-          {/* Generation Button - NO LIMITS */}
+          {/* Generation Button */}
           <button 
             onClick={generateScripts}
             disabled={loading}
@@ -78,7 +78,7 @@ export default function Home() {
           {/* Info Text */}
           <div className="generation-info">
             <p>
-              <strong>Unlimited Generations:</strong> Create as many AI scripts as you need.
+              <strong>Unlimited Generations:</strong> Create as many AI scripts as you need. No limits, no ads.
             </p>
           </div>
         </div>
