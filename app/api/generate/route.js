@@ -41,7 +41,7 @@ export async function POST(request) {
             messages: [
               {
                 role: "user",
-                content: `Create 11 Instagram Reel scripts for: "${userScript}"
+                content: `Create 10 Instagram Reel scripts for: "${userScript}"
 
 USE THESE EXACT TRENDS WITH THEIR PROPER FORMATS:
 
@@ -65,8 +65,6 @@ USE THESE EXACT TRENDS WITH THEIR PROPER FORMATS:
 
 10. "Doesn't Know it Yet" Trend - Show ordinary moment with text "This was me before...", then dramatic transition to big achievement/realization.
 
-11. "end of the scripts"
-
 FORMAT FOR EACH SCRIPT:
 🎬 TREND: [Trend Name]
 📱 VISUALS: [3-4 specific camera shots/angles]
@@ -74,7 +72,7 @@ FORMAT FOR EACH SCRIPT:
 🎵 SONG: [Current viral audio that fits the trend]
 🏷️ HASHTAGS: [5-7 relevant hashtags including the trend name]
 
-Create EXACTLY 11 scripts - one for each trend above. Make them authentic and easy to film with a phone.`
+Create EXACTLY 10 scripts - one for each trend above. Make them authentic and easy to film with a phone.`
               }
             ],
             max_tokens: 4000,
