@@ -45,26 +45,27 @@ export async function POST(request) {
 
 USE THESE EXACT TRENDS WITH THEIR PROPER FORMATS:
 
-1. "Stop Talking Dirty to Me" Trend - Lip sync to this sound while playfully rejecting something people say, then revealing what you actually love.
+0. "Stop Talking Dirty to Me" Trend - Lip sync to this sound while playfully rejecting something people say, then revealing what you actually love.
 
-2. "Smile If" Trend - Start with neutral face + text "Smile if you've ever...", then big smile appears when revealing a relatable truth.
+1. "Smile If" Trend - Start with neutral face + text "Smile if you've ever...", then big smile appears when revealing a relatable truth.
 
-3. "Things I Do to Fill My Cup" Trend - Show 3 quick activities that represent self-care or things that make you happy in your niche.
+2. "Things I Do to Fill My Cup" Trend - Show 3 quick activities that represent self-care or things that make you happy in your niche.
 
-4. "Who Are You Trying to Impress?" Trend - Show current you working hard with text "Why do you work so hard?", then childhood photo with text "Them" - showing you're doing it for your younger self.
+3. "Who Are You Trying to Impress?" Trend - Show current you working hard with text "Why do you work so hard?", then childhood photo with text "Them" - showing you're doing it for your younger self.
 
-5. "Almost Forgot This Was the Whole Point" Trend - Show stressful situation, then transition to joyful moment with text "Almost forgot THIS was the whole point".
+4. "Almost Forgot This Was the Whole Point" Trend - Show stressful situation, then transition to joyful moment with text "Almost forgot THIS was the whole point".
 
-6. "Not Ashamed to Admit" Trend - Direct to camera with text "I'm a [niche] and I'm not ashamed to admit..." followed by 3 funny/relatable confessions.
+5. "Not Ashamed to Admit" Trend - Direct to camera with text "I'm a [niche] and I'm not ashamed to admit..." followed by 3 funny/relatable confessions.
 
-7. "Maturing" Trend - Text "Maturing is realizing..." with a wise statement, then "Jk I'm still..." with a funny twist showing you haven't changed.
+6. "Maturing" Trend - Text "Maturing is realizing..." with a wise statement, then "Jk I'm still..." with a funny twist showing you haven't changed.
 
-8. "It's Whackadoodle Time" Trend - Start calm, then sudden energetic burst with crazy excitement about your niche topic.
+7. "It's Whackadoodle Time" Trend - Start calm, then sudden energetic burst with crazy excitement about your niche topic.
 
-9. "I'm Gonna Have to Go and Disagree With You There" Trend - Lip sync to this audio while disagreeing with a common misconception in your niche, then proving your point.
+8. "I'm Gonna Have to Go and Disagree With You There" Trend - Lip sync to this audio while disagreeing with a common misconception in your niche, then proving your point.
 
-10. "Doesn't Know it Yet" Trend - Show ordinary moment with text "This was me before...", then dramatic transition to big achievement/realization.
-
+9. "Doesn't Know it Yet" Trend - Show ordinary moment with text "This was me before...", then dramatic transition to big achievement/realization.
+ 
+10. "end of the scripts"
 FORMAT FOR EACH SCRIPT:
 🎬 TREND: [Trend Name]
 📱 VISUALS: [3-4 specific camera shots/angles]
