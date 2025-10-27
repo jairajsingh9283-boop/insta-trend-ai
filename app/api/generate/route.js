@@ -1,4 +1,4 @@
-// app/api/generate/route.js - WITH TRENDS, SONGS & HASHTAGS
+// app/api/generate/route.js - WITH PROPER TREND DESCRIPTIONS
 import { NextResponse } from 'next/server';
 
 // In-memory store for demo
@@ -43,26 +43,36 @@ export async function POST(request) {
                 role: "user",
                 content: `Create 10 Instagram Reel scripts for: "${userScript}"
 
-Use these EXACT trends and blend them naturally:
-- "Stop Talking Dirty to Me" Trend
-- "Smile If" Trend  
-- "Things I Do to Fill My Cup" Trend
-- "Who Are You Trying to Impress?" Trend
-- "Almost Forgot This Was the Whole Point" Trend
-- "Not Ashamed to Admit" Trend
-- "Maturing" Trend
-- "It's Whackadoodle Time" Trend
-- "I'm Gonna Have to Go and Disagree With You There" Trend
-- "Doesn't Know it Yet" Trend
+USE THESE EXACT TRENDS WITH THEIR PROPER FORMATS:
+
+1. "Stop Talking Dirty to Me" Trend - Lip sync to this sound while playfully rejecting something people say, then revealing what you actually love.
+
+2. "Smile If" Trend - Start with neutral face + text "Smile if you've ever...", then big smile appears when revealing a relatable truth.
+
+3. "Things I Do to Fill My Cup" Trend - Show 3 quick activities that represent self-care or things that make you happy in your niche.
+
+4. "Who Are You Trying to Impress?" Trend - Show current you working hard with text "Why do you work so hard?", then childhood photo with text "Them" - showing you're doing it for your younger self.
+
+5. "Almost Forgot This Was the Whole Point" Trend - Show stressful situation, then transition to joyful moment with text "Almost forgot THIS was the whole point".
+
+6. "Not Ashamed to Admit" Trend - Direct to camera with text "I'm a [niche] and I'm not ashamed to admit..." followed by 3 funny/relatable confessions.
+
+7. "Maturing" Trend - Text "Maturing is realizing..." with a wise statement, then "Jk I'm still..." with a funny twist showing you haven't changed.
+
+8. "It's Whackadoodle Time" Trend - Start calm, then sudden energetic burst with crazy excitement about your niche topic.
+
+9. "I'm Gonna Have to Go and Disagree With You There" Trend - Lip sync to this audio while disagreeing with a common misconception in your niche, then proving your point.
+
+10. "Doesn't Know it Yet" Trend - Show ordinary moment with text "This was me before...", then dramatic transition to big achievement/realization.
 
 FORMAT FOR EACH SCRIPT:
 🎬 TREND: [Trend Name]
-📱 VISUALS: [3-4 specific shots]
-💬 SCRIPT: [Natural dialogue using the trend]
-🎵 SONG: [Current viral audio suggestion]
-🏷️ HASHTAGS: [5-7 relevant hashtags]
+📱 VISUALS: [3-4 specific camera shots/angles]
+💬 SCRIPT: [Natural dialogue that matches the trend format]
+🎵 SONG: [Current viral audio that fits the trend]
+🏷️ HASHTAGS: [5-7 relevant hashtags including the trend name]
 
-Create 10 complete scripts with songs and hashtags. Make them engaging and easy to film.`
+Create EXACTLY 10 scripts - one for each trend above. Make them authentic and easy to film with a phone.`
               }
             ],
             max_tokens: 4000,
