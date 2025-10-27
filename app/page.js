@@ -101,24 +101,34 @@ export default function Home() {
             <p>✨ Your 10 AI Generated Reel Scripts ✨</p>
             <small>Complete with trends, songs, and hashtags</small>
           </div>
-          {scripts.map((script, index) => (
-            <div key={index} className="script-card">
-              <div className="script-content">
-                <pre>{script}</pre>
-              </div>
-              <button
-                onClick={() => {
-                  navigator.clipboard.writeText(script);
-                  alert('Script copied to clipboard!');
-                }}
-                className="copy-button"
-              >
-                📋 Copy Script
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
+         {scripts.map((script, index) => {
+  // extract the trend title from the AI text
+  const trendMatch = script.match(/🎬\s*TREN(D|DS)?:\s*(.+)/i);
+  const trendName = trendMatch ? trendMatch[2].trim() : `Trend ${index + 1}`;
+
+  return (
+    <div key={index} className="script-card">
+      {/* ✅ Trend name moved INSIDE card */}
+      <h2 className="trend-title">
+        {index + 1}. {trendName}
+      </h2>
+
+      <div className="script-content">
+        <pre>{script}</pre>
+      </div>
+
+      <button
+        onClick={() => {
+          navigator.clipboard.writeText(script);
+          alert('Script copied to clipboard!');
+        }}
+        className="copy-button"
+      >
+        📋 Copy Script
+      </button>
+    </div>
+  );
+})}
 
       {/* Loading Indicator */}
       {loading && (

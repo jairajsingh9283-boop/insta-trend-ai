@@ -1557,3 +1557,38 @@ main {
 .copy-button:hover {
   background: #5a6fd8;
 }
+.trend-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #222;
+}
+
+.script-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.script-content pre {
+  white-space: pre-wrap;
+  color: #333;
+  line-height: 1.5;
+}
+
+.copy-button {
+  background: #2563eb;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 8px;
+  margin-top: 0.8rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.copy-button:hover {
+  background: #1e40af;
+}
