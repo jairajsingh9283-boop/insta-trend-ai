@@ -1,4 +1,4 @@
-// app/page.js - PURE AI GENERATION (NO TEMPLATES)
+// app/page.js - AI REEL GENERATOR WITH TRENDS
 'use client';
 import { useState } from 'react';
 
@@ -8,7 +8,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [lastError, setLastError] = useState('');
 
-  // Pure generation function - NO TEMPLATES
+  // Main generation function
   const generateScripts = async () => {
     if (!userScript.trim()) {
       alert('Please enter your content niche or idea!');
@@ -62,7 +62,7 @@ export default function Home() {
           <textarea 
             value={userScript}
             onChange={(e) => setUserScript(e.target.value)}
-            placeholder="e.g., I am a gaming creator, beauty influencer, food blogger, lifestyle content creator..."
+            placeholder="e.g., I am a lifestyle creator and want to talk about coffee health benefits..."
             rows="3"
           />
           
@@ -72,13 +72,13 @@ export default function Home() {
             disabled={loading}
             className="generate-button"
           >
-            {loading ? '🔄 AI is Generating...' : '🎬 Generate AI Scripts'}
+            {loading ? '🔄 AI is Generating...' : '🎬 Generate 10 Trendy Scripts'}
           </button>
 
           {/* Info Text */}
           <div className="generation-info">
             <p>
-              <strong>Unlimited Generations:</strong> Create as many AI scripts as you need. No limits, no ads.
+              <strong>10 Complete Scripts:</strong> Get 10 viral Reel scripts with trends, songs, and hashtags tailored to your niche.
             </p>
           </div>
         </div>
@@ -98,12 +98,13 @@ export default function Home() {
       {scripts.length > 0 && (
         <div className="scripts-container">
           <div className="scripts-header">
-            <p>✨ Your AI Generated Scripts ✨</p>
+            <p>✨ Your 10 AI Generated Reel Scripts ✨</p>
+            <small>Complete with trends, songs, and hashtags</small>
           </div>
           {scripts.map((script, index) => (
             <div key={index} className="script-card">
               <div className="script-content">
-                {script}
+                <pre>{script}</pre>
               </div>
               <button
                 onClick={() => {
@@ -123,8 +124,8 @@ export default function Home() {
       {loading && (
         <div className="loading-indicator">
           <div className="spinner"></div>
-          <p>AI is creating your scripts...</p>
-          <p className="loading-subtext">This may take 10-30 seconds</p>
+          <p>AI is creating your 10 trendy scripts...</p>
+          <p className="loading-subtext">Using current viral trends + your niche</p>
         </div>
       )}
     </div>

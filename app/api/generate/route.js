@@ -1,7 +1,7 @@
-// app/api/generate/route.js - FIXED (NO LOCALSTORAGE ERROR)
+// app/api/generate/route.js - WITH TRENDS, SONGS & HASHTAGS
 import { NextResponse } from 'next/server';
 
-// In-memory store for demo (replace with database later)
+// In-memory store for demo
 let userGenerations = new Map();
 
 export async function POST(request) {
@@ -12,22 +12,7 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Please enter your script idea' }, { status: 400 });
     }
 
-    console.log('PURE AI - Generating for:', userScript, 'User:', userId, 'AdWatched:', adWatched);
-
-    // 🚫 REMOVED ALL USAGE LIMITS - Users can generate unlimited scripts
-    if (adWatched) {
-      console.log('✅ User watched ad - granting premium generation');
-    }
-
-    // 📊 Analytics Tracking (for your insights)
-    const generationAnalytics = {
-      userId,
-      timestamp: new Date().toISOString(),
-      input: userScript.substring(0, 100), // Store first 100 chars only
-      adWatched,
-      modelUsed: null,
-      success: false
-    };
+    console.log('TREND AI - Generating for:', userScript);
 
     // STRATEGY: Try multiple models until one works
     const models = [
@@ -56,25 +41,32 @@ export async function POST(request) {
             messages: [
               {
                 role: "user",
-                content: `Create 3 COMPLETELY DIFFERENT Instagram Reel scripts for: "${userScript}"
+                content: `Create 10 Instagram Reel scripts for: "${userScript}"
 
-IMPORTANT: 
-- Create REAL, ORIGINAL scripts (no templates)
-- Each script must be UNIQUE and READY-TO-SHOOT
-- Include specific visual directions, sound suggestions, and creative approaches
-- Make it engaging and trend-appropriate
+Use these EXACT trends and blend them naturally:
+- "Stop Talking Dirty to Me" Trend
+- "Smile If" Trend  
+- "Things I Do to Fill My Cup" Trend
+- "Who Are You Trying to Impress?" Trend
+- "Almost Forgot This Was the Whole Point" Trend
+- "Not Ashamed to Admit" Trend
+- "Maturing" Trend
+- "It's Whackadoodle Time" Trend
+- "I'm Gonna Have to Go and Disagree With You There" Trend
+- "Doesn't Know it Yet" Trend
 
-OUTPUT FORMAT:
-Script 1: [Unique creative script]
-Script 2: [Completely different approach] 
-Script 3: [Another unique perspective]
+FORMAT FOR EACH SCRIPT:
+🎬 TREND: [Trend Name]
+📱 VISUALS: [3-4 specific shots]
+💬 SCRIPT: [Natural dialogue using the trend]
+🎵 SONG: [Current viral audio suggestion]
+🏷️ HASHTAGS: [5-7 relevant hashtags]
 
-NO TEMPLATES - ONLY ORIGINAL CREATIVE CONTENT`
+Create 10 complete scripts with songs and hashtags. Make them engaging and easy to film.`
               }
             ],
-            max_tokens: 2000,
-            temperature: 0.9, // High creativity
-            top_p: 0.95
+            max_tokens: 4000,
+            temperature: 0.8,
           })
         });
 
@@ -93,36 +85,26 @@ NO TEMPLATES - ONLY ORIGINAL CREATIVE CONTENT`
         if (data.choices && data.choices[0].message) {
           const aiContent = data.choices[0].message.content;
           console.log('SUCCESS with model:', models[modelIndex]);
-          console.log('AI Content:', aiContent.substring(0, 200) + '...');
           
-          // 📊 Update analytics
-          generationAnalytics.modelUsed = models[modelIndex];
-          generationAnalytics.success = true;
+          // Format the AI response
+          const scripts = formatAIScripts(aiContent);
 
-          // 💾 Store generation data in memory
+          // Store generation data
           if (!userGenerations.has(userId)) {
             userGenerations.set(userId, []);
           }
           userGenerations.get(userId).push({
-            timestamp: generationAnalytics.timestamp,
-            input: generationAnalytics.input,
-            model: generationAnalytics.modelUsed
+            timestamp: new Date().toISOString(),
+            input: userScript.substring(0, 100),
+            model: models[modelIndex]
           });
 
-          // Keep only last 100 generations per user (memory management)
-          if (userGenerations.get(userId).length > 100) {
-            userGenerations.set(userId, userGenerations.get(userId).slice(-100));
-          }
-
-          // Format the pure AI response
-          const scripts = formatPureAIScripts(aiContent);
           return NextResponse.json({ 
             scripts: scripts,
             model: models[modelIndex],
             success: true,
             analytics: {
               totalGenerations: userGenerations.get(userId)?.length || 1,
-              adWatched: adWatched,
             }
           });
         }
@@ -137,14 +119,10 @@ NO TEMPLATES - ONLY ORIGINAL CREATIVE CONTENT`
       await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
-    // If ALL models fail
-    console.log('ALL MODELS FAILED');
-    generationAnalytics.success = false;
-    
     throw new Error('All AI models are currently busy. Please try again in 30 seconds.');
 
   } catch (error) {
-    console.error('PURE AI FAILED:', error);
+    console.error('TREND AI FAILED:', error);
     
     return NextResponse.json({ 
       error: 'AI services are currently optimizing. Please try again in 30 seconds.',
@@ -154,26 +132,19 @@ NO TEMPLATES - ONLY ORIGINAL CREATIVE CONTENT`
   }
 }
 
-function formatPureAIScripts(aiContent) {
-  // The AI should return properly formatted scripts
-  // Just clean it up and return as-is
-  const cleaned = aiContent
-    .replace(/^(Script|Scripts|Here).*?:\s*/i, '')
-    .replace(/```/g, '')
-    .trim();
-
-  // Try to split into 3 scripts if possible
-  const sections = cleaned.split(/(?=Script \d+|🎬|Option \d+)/i);
+function formatAIScripts(aiContent) {
+  // Split into individual scripts
+  const sections = aiContent.split(/(?=🎬 TREND: |\d+\. 🎬|Script \d+:)/i);
   
-  if (sections.length >= 3) {
-    return sections.slice(0, 3).map(section => section.trim());
+  if (sections.length >= 10) {
+    return sections.slice(0, 10).map(section => section.trim()).filter(section => section.length > 0);
   }
   
-  // If we can't split, return as one block (pure AI content)
-  return [cleaned];
+  // If we can't split properly, return the content as one block
+  return [aiContent];
 }
 
-// 📊 Optional: Add analytics endpoint for your insights
+// Analytics endpoint
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get('userId');
